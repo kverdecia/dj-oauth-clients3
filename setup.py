@@ -56,7 +56,11 @@ setup(
         'oauth_clients3',
     ],
     include_package_data=True,
-    install_requires=[],
+    install_requires=[
+        'requests',
+        'django>=2.0',
+        'django-model-utils>=3.2.0'
+    ],
     license="MIT",
     zip_safe=False,
     keywords='dj-oauth-clients3',
