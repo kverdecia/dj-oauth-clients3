@@ -45,3 +45,7 @@ output/*/index.html
 
 # Sphinx
 docs/_build
+
+requirements.txt.py
+requirements_test.txt.py
+requirements_dev.txt.py
