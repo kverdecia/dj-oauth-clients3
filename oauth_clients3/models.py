@@ -9,8 +9,18 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
-from model_utils.models import TimeStampedModel
 
+
+class TimeStampedModel(models.Model):
+    """
+    An abstract base class model that provides self-updating
+    ``created`` and ``modified`` fields.
+    """
+    created = models.DateTimeField(_('Created'), auto_now_add=True, editable=False)
+    modified = models.DateTimeField(_('Modified'), auto_now=True, editable=False)
+
+    class Meta:
+        abstract = True
 
 class Client(TimeStampedModel):
     "Configuration and authentication of an oauth2 clients."
@@ -56,7 +66,7 @@ class Client(TimeStampedModel):
     def start_authorization_url(self, request, redirect_url, final_redirection=None):
         """Returns the oauth2 provider url that will be redirected to when starting
         the authorization process.
-        
+
         Parameters
         ----------
         request
@@ -66,7 +76,7 @@ class Client(TimeStampedModel):
         final_redirection: string
             If provided, after the redirection from the oauth2 provider, the
             user will be redirected to the url in this parameter.
-    
+
         Returns
         -------
         url: string
@@ -99,7 +109,8 @@ class Client(TimeStampedModel):
         del request.session[self.session_state_name]
         code = request.GET['code']
         token_url = '{}?grant_type=authorization_code&client_id={}&client_secret={}&redirect_uri={}&code={}'
-        token_url = token_url.format(self.token_endpoint, self.client_id, self.client_secret, redirect_url, code)
+        token_url = token_url.format(self.token_endpoint, self.client_id,
+            self.client_secret, redirect_url, code)
         response = requests.post(token_url)
         data = response.json()
         access_token = AccessToken()
